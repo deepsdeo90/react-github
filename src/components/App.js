@@ -5,6 +5,7 @@ import $ from 'jquery'
 import '../css/bootstrap.css';
 import '../css/style.css';
 import Profile from './github/Profile';
+import Search from './github/Search';
 
 class App extends Component{
 	constructor(props){
@@ -54,13 +55,27 @@ class App extends Component{
 		  }.bind(this)
 		});
 	}
+	handleFormSubmit(username){
+		this.setState({
+			username:username
+		},function(){
+			this.getUserData();
+			this.getUserRepos();	
+		})
+	}
 	componentDidMount(){
 		this.getUserData();
 		this.getUserRepos();
 	}
 	render(){
 		return(
+			<div>
+				<Search 
+					onFormSubmit={this.handleFormSubmit.bind(this)}
+				/>
+				<br/>
 				<Profile {...this.state} />
+			</div>
 			)
 	}
 }
