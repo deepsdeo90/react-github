@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import $ from 'jquery'
 import '../css/bootstrap.css';
 import '../css/style.css';
+import Profile from './github/Profile';
 
 class App extends Component{
 	constructor(props){
@@ -12,7 +13,7 @@ class App extends Component{
 			username:'deepsdeo90',
 			userData:[],
 			userRepos:[],
-			perPage:5
+			perPage:10
 		}
 	}
 	getUserData(){
@@ -21,21 +22,45 @@ class App extends Component{
 		  dataType: 'json',
 		  cache: false,
 		  success: function(data) {
-		    console.log(data);
+		    //console.log(data);
+		    this.setState({
+		    	userData:data
+		    });
 		  }.bind(this),
 		  error: function(xhr,status,err){
 		  	alert(err);
+		  	this.setState({
+		  		username:''
+		  	})
+		  }.bind(this)
+		});
+	}
+	getUserRepos(){
+		$.ajax({
+		  url: "https://api.github.com/users/"+this.state.username+'/repos?per_page='+this.state.perPage+'&client_id='+this.props.clientId+'&client_secret='+this.props.clientSecret+'&sort=created',
+		  dataType: 'json',
+		  cache: false,
+		  success: function(data) {
+		    console.log(data);
+		    this.setState({
+		    	userRepos:data
+		    });
+		  }.bind(this),
+		  error: function(xhr,status,err){
+		  	alert(err);
+		  	this.setState({
+		  		username:''
+		  	})
 		  }.bind(this)
 		});
 	}
 	componentDidMount(){
 		this.getUserData();
+		this.getUserRepos();
 	}
 	render(){
 		return(
-				<div>
-				My app
-				</div>
+				<Profile {...this.state} />
 			)
 	}
 }
